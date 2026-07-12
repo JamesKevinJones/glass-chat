@@ -1,0 +1,215 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/inter';
+@import 'highlight.js/styles/github-dark.min.css';
+
+/*
+ * Aura design tokens — Apple Glass / visionOS inspired.
+ * Cool cyan-teal accent over a living mesh gradient.
+ */
+:root {
+  --bg-deep: #070b14;
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-bg-strong: rgba(255, 255, 255, 0.12);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-highlight: rgba(255, 255, 255, 0.28);
+  --text: #f4f6fb;
+  --text-muted: #9aa3b5;
+  --accent: #5eead4;
+  --accent-soft: rgba(94, 234, 212, 0.18);
+  --accent-strong: #2dd4bf;
+  --danger: #fb7185;
+  --danger-soft: rgba(251, 113, 133, 0.16);
+  --shadow-glass: 0 10px 40px rgba(0, 0, 0, 0.35);
+  --radius-panel: 1.5rem;
+  --font-sans: 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text',
+    'Segoe UI', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  color: var(--text);
+  background: var(--bg-deep);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+  letter-spacing: -0.01em;
+}
+
+/* Living mesh backdrop — glass needs something vibrant behind it */
+.mesh-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 20% 20%, #1a3a4a 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 10%, #2a1f4a 0%, transparent 45%),
+    radial-gradient(ellipse at 70% 80%, #0d3d38 0%, transparent 50%),
+    radial-gradient(ellipse at 10% 90%, #1a2a5a 0%, transparent 40%),
+    linear-gradient(160deg, #070b14 0%, #0c1220 50%, #0a1520 100%);
+}
+
+.mesh-bg::before,
+.mesh-bg::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.55;
+  animation: mesh-drift 18s ease-in-out infinite alternate;
+}
+
+.mesh-bg::before {
+  width: 42vw;
+  height: 42vw;
+  top: -10%;
+  left: -5%;
+  background: #14b8a6;
+}
+
+.mesh-bg::after {
+  width: 36vw;
+  height: 36vw;
+  bottom: -8%;
+  right: -4%;
+  background: #38bdf8;
+  animation-delay: -6s;
+}
+
+@keyframes mesh-drift {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(4%, 6%) scale(1.12);
+  }
+}
+
+.app-layer {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  width: 100%;
+}
+
+/* Shared glass surface utility */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-glass), inset 0 1px 0 var(--glass-highlight);
+}
+
+.glass-strong {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(36px) saturate(180%);
+  -webkit-backdrop-filter: blur(36px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-glass), inset 0 1px 0 var(--glass-highlight);
+}
+
+/* Drag region for custom-feel title areas */
+.drag-region {
+  -webkit-app-region: drag;
+}
+
+.no-drag {
+  -webkit-app-region: no-drag;
+}
+
+/* Scrollbars */
+.aura-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.aura-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.aura-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+}
+.aura-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* Markdown inside bubbles */
+.prose-aura {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  word-break: break-word;
+}
+
+.prose-aura p {
+  margin: 0.4em 0;
+}
+
+.prose-aura p:first-child {
+  margin-top: 0;
+}
+
+.prose-aura p:last-child {
+  margin-bottom: 0;
+}
+
+.prose-aura pre {
+  margin: 0.75em 0;
+  padding: 0.85em 1em;
+  border-radius: 0.85rem;
+  overflow-x: auto;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.85rem;
+}
+
+.prose-aura code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.prose-aura :not(pre) > code {
+  padding: 0.15em 0.4em;
+  border-radius: 0.35rem;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 0.88em;
+}
+
+.prose-aura ul,
+.prose-aura ol {
+  margin: 0.5em 0;
+  padding-left: 1.25em;
+}
+
+.prose-aura a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.prose-aura a:hover {
+  text-decoration: underline;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mesh-bg::before,
+  .mesh-bg::after {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

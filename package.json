@@ -1,0 +1,52 @@
+{
+  "name": "aura",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Aura — private local Ollama desktop chat with Apple Glass UI, accounts, and streaming.",
+  "main": "dist-electron/main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "npm run build:electron && concurrently -k -n vite,electron -c cyan,magenta \"vite --host 127.0.0.1\" \"wait-on tcp:5173 && cross-env VITE_DEV_SERVER_URL=http://127.0.0.1:5173 electron .\"",
+    "build:electron": "tsc -p tsconfig.node.json && esbuild electron/preload.ts --bundle --platform=node --format=cjs --external:electron --outfile=dist-electron/preload.cjs",
+    "build": "npm run typecheck && vite build && npm run build:electron",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.web.json --noEmit && tsc -p tsconfig.node.json --noEmit",
+    "ollama:up": "docker compose up -d",
+    "ollama:down": "docker compose down",
+    "ollama:pull": "ollama pull qwen2.5:3b"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "^5.2.8",
+    "@vitejs/plugin-react": "^5.1.1",
+    "clsx": "^2.1.1",
+    "electron": "^39.2.6",
+    "framer-motion": "^12.23.12",
+    "highlight.js": "^11.11.1",
+    "lucide-react": "^0.544.0",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
+    "react-markdown": "^10.1.0",
+    "rehype-highlight": "^7.0.2",
+    "remark-gfm": "^4.0.1",
+    "zustand": "^5.0.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.13",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^22.19.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "concurrently": "^9.2.1",
+    "cross-env": "^7.0.3",
+    "esbuild": "^0.25.9",
+    "jsdom": "^27.3.0",
+    "tailwindcss": "^4.1.13",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.6",
+    "vitest": "^4.1.8",
+    "wait-on": "^9.0.3"
+  }
+}

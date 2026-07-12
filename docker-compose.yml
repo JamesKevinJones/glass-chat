@@ -1,0 +1,54 @@
+# Aura — local Ollama backend
+#
+# Usage:
+#   docker compose up -d
+#   docker compose exec ollama ollama pull qwen2.5:3b
+#
+# Then run the Aura desktop app with: npm run dev
+# Aura connects to http://localhost:11434
+
+services:
+  ollama:
+    # Prefer a digest/tag pin in production; latest tracks Ollama's current stable.
+    image: ollama/ollama:latest
+    container_name: aura-ollama
+    ports:
+      - '11434:11434'
+    volumes:
+      - aura_ollama_data:/root/.ollama
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD-SHELL', 'ollama list >/dev/null 2>&1 || exit 1']
+      interval: 20s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+    # Uncomment the block below if you have an NVIDIA GPU + NVIDIA Container Toolkit:
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+
+  # Optional browser UI companion (not required for Aura desktop)
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: aura-open-webui
+    depends_on:
+      ollama:
+        condition: service_started
+    ports:
+      - '8080:8080'
+    environment:
+      OLLAMA_BASE_URL: http://ollama:11434
+    volumes:
+      - aura_open_webui_data:/app/backend/data
+    restart: unless-stopped
+    profiles:
+      - webui
+
+volumes:
+  aura_ollama_data:
+  aura_open_webui_data:
